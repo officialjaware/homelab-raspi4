@@ -6,8 +6,6 @@ services:
     hostname: vault
     container_name: vault
     network_mode: host
-    ports:
-      - "8200:8200"
     environment:
       VAULT_ADDR: "http://127.0.0.1:8200"
     volumes:
@@ -15,4 +13,19 @@ services:
       - /var/docker/vault/config:/vault/config
     cap_add:
       - IPC_LOCK
-    entrypoint: vault server -config=/vault/config/standalone.hcl
+    entrypoint: vault server -config=/vault/config.hcl
+  pihole:
+    container_name: pihole2
+    image: pihole/pihole:latest
+    network_mode: host
+    environment:
+      TZ: 'America/New_York'
+      # WEBPASSWORD: 'set a secure password here or it will be random'
+    # Volumes store your data between container upgrades
+    volumes:
+      - /var/docker/etc-pihole:/etc/pihole
+      - /var/docker/etc-dnsmasq.d:/etc/dnsmasq.d
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    cap_add:
+      - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)      
+    restart: unless-stopped

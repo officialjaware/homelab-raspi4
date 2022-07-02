@@ -15,7 +15,7 @@ services:
       UNIFI_UID: 1000
       UNIFI_GID: 1000
   pihole:
-    container_name: pihole
+    container_name: pihole1
     image: pihole/pihole:latest
     network_mode: host
     environment:
