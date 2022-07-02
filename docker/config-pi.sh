@@ -64,6 +64,8 @@ EOF
 # Disable Bluetooth
 #dtoverlay=pi3-disable-bt
 
+sudo apt-get update
+
 # Uninstall BlueZ and related packages
 sudo apt-get purge bluez -y
 sudo apt-get autoremove -y
