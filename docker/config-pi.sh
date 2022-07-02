@@ -5,8 +5,6 @@ set -e
 ## Variables ##
 #hostname=
 
-sudo apt-get update
-
 # Set locale
 #sudo rm -f /etc/localtime
 #sudo echo "America/New York" > /etc/timezone
@@ -70,6 +68,27 @@ EOF
 sudo apt-get purge bluez -y
 sudo apt-get autoremove -y
 
+# docker
+dependencies=(
+    libffi-dev
+    libssl-dev
+    python3-dev
+    python3
+    python3-pip
+)
+
+for i in ${dependencies[@]}; do
+    sudo apt install -y $i
+done
+
+sudo apt-get update
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker pi
+sudo pip3 install docker-compose
+sudo systemctl enable docker
+
 # log2ram
 git clone https://github.com/azlux/log2ram.git
 pushd log2ram/
@@ -77,7 +96,6 @@ chmod +x install.sh
 sudo ./install.sh
 sudo sed -i -e "s/^SIZE=40M/SIZE=128M/g" /etc/log2ram.conf
 popd
-
 
 sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get autoremove && sudo apt-get autoclean
 
