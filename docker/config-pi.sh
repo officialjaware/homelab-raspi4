@@ -42,7 +42,7 @@ sudo tee -a /etc/dhcpcd.conf <<EOF
 interface wlan0
 static ip_address=10.0.1.2
 static routers=10.0.1.1
-static domain_name_servers=10.0.1.2 10.0.1.3
+static domain_name_servers=10.0.1.2 1.1.1.1 10.0.1.3
 EOF
 
 # Set a static IP for eth0
@@ -51,15 +51,17 @@ sudo tee -a /etc/dhcpcd.conf <<EOF
 interface eth0
 static ip_address=10.0.1.3
 static routers=10.0.1.1
-static domain_name_servers=10.0.1.3 10.0.1.2
+static domain_name_servers=10.0.1.3 1.1.1.1 10.0.1.2
 EOF
 
 # Create VLANs
 #ip link add link eth0 name eth1 address xx:xx:xx:xx:xx:xx type macvlan
 #ip link add link eth0 name eth2 address yy:yy:yy:yy:yy:yy type macvlan
 
-#sudo systemctl restart dhcpcd.service
-#sudo systemctl restart networking
+sudo systemctl restart dhcpcd.service
+sudo systemctl restart networking
+
+sleep 5
 
 # Disable Bluetooth
 #dtoverlay=pi3-disable-bt

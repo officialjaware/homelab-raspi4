@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  vault-server:
+    image: hashicorp/vault-enterprise:1.10.4-ent
+    hostname: vault
+    container_name: vault
+    network_mode: host
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_ADDR: "http://127.0.0.1:8200"
+    volumes:
+      - /var/docker/vault/file:/vault/file
+      - /var/docker/vault/config:/vault/config
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/standalone.hcl

@@ -1,4 +1,5 @@
 version: '3.7'
+
 services:
   unifi:
     image: "jacobalberty/unifi:stable-5"
@@ -6,6 +7,7 @@ services:
     init: true
     restart: always
     volumes:
+    network_mode: host
       - /var/docker/unifi:/unifi
     environment:
       TZ: 'America/New_York'
@@ -15,12 +17,7 @@ services:
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
-    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      #- "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
-      - "80:80/tcp"
+    network_mode: host
     environment:
       TZ: 'America/New_York'
       # WEBPASSWORD: 'set a secure password here or it will be random'
