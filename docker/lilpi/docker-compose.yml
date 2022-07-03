@@ -7,8 +7,8 @@ services:
     init: true
     restart: always
     volumes:
-    network_mode: host
       - /var/docker/unifi:/unifi
+    network_mode: host
     environment:
       TZ: 'America/New_York'
       RUNAS_UID0: 'false'
