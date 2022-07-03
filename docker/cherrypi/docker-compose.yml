@@ -29,3 +29,16 @@ services:
     cap_add:
       - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)      
     restart: unless-stopped
+  vault-transit:
+    image: hashicorp/vault:1.10.4
+    hostname: vault-transit
+    container_name: vault-transit
+    network_mode: host
+    environment:
+      VAULT_ADDR: "http://127.0.0.1:8200"
+    volumes:
+      - /var/docker/vault/file:/vault/file
+      - /var/docker/vault/config:/vault/config
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.hcl
