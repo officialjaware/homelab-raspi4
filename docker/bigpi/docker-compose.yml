@@ -9,8 +9,8 @@ services:
     environment:
       VAULT_ADDR: "http://127.0.0.1:8200"
     volumes:
-      - /var/docker/vault/file:/vault/file
-      - /var/docker/vault/config:/vault/config
+      - /etc/vault.d/file:/vault/file
+      - /etc/vault.d:/vault
     cap_add:
       - IPC_LOCK
-    entrypoint: vault server -config=/vault/config/config.hcl
+    entrypoint: vault server -config=/vault/config.hcl

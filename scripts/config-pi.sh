@@ -77,10 +77,6 @@ sudo ./install.sh
 sudo sed -i -e "s/^SIZE=40M/SIZE=128M/g" /etc/log2ram.conf
 popd
 
-curl https://releases.hashicorp.com/vault/1.10.4/vault_1.10.4_linux_arm.zip -o vault.zip
-
-sudo unzip vault.zip -d /usr/local/bin/
-
 sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get autoremove && sudo apt-get autoclean
 
 sudo reboot now
