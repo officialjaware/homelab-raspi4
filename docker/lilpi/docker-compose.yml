@@ -1,21 +1,52 @@
 version: '3.7'
 
 services:
-  unifi:
-    image: "jacobalberty/unifi:stable-5"
-    container_name: unifi
-    init: true
+  mongo:
+    image: mongo:4
+    container_name: mongo
+    networks:
+      - unifi
     restart: always
     volumes:
-      - /var/docker/unifi:/unifi
-    network_mode: host
+      - db:/data/db
+      - dbcfg:/data/configdb
+  controller:
+    image: jacobalberty/unifi:stable-5
+    container_name: unifi
+    depends_on:
+      - mongo
+    init: true
+    networks:
+      - unifi
+    restart: always
+    volumes:
+      - dir:/unifi
+      - data:/unifi/data
+      - log:/unifi/log
+      - cert:/unifi/cert
+      - init:/unifi/init.d
+      - run:/var/run/unifi
+      # Mount local folder for backups and autobackups
+      - ./backup:/unifi/data/backup
+    user: unifi
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
     environment:
-      TZ: 'America/New_York'
-      RUNAS_UID0: 'false'
-      UNIFI_UID: 1000
-      UNIFI_GID: 1000
+      DB_URI: mongodb://mongo/unifi
+      STATDB_URI: mongodb://mongo/unifi_stat
+      DB_NAME: unifi
+    ports:
+      - "3478:3478/udp" # STUN
+      - "6789:6789/tcp" # Speed test
+      - "8080:8080/tcp" # Device/ controller comm.
+      - "8443:8443/tcp" # Controller GUI/API as seen in a web browser
+      - "8880:8880/tcp" # HTTP portal redirection
+      - "8843:8843/tcp" # HTTPS portal redirection
+      - "10001:10001/udp" # AP discovery
+      
+# The following run in network_mode = host      
   pihole:
-    container_name: pihole1
+    container_name: pihole
     image: pihole/pihole:latest
     network_mode: host
     environment:
@@ -42,3 +73,16 @@ services:
     cap_add:
       - IPC_LOCK
     entrypoint: vault server -config=/vault/config.hcl
+
+volumes:
+  db:
+  dbcfg:
+  data:
+  log:
+  cert:
+  init:
+  dir:
+  run:
+
+networks:
+  unifi:
